@@ -21,35 +21,52 @@ import javax.swing.*;
 
 @SuppressWarnings("serial")
 public class GraphicsDisplay extends JPanel {
+    // Список координат точек для построения графика
     private Double[][] graphicsData;
+    // Флаговые переменные, задающие правила отображения графика
     private boolean showAxis = true;
     private boolean showMarkers = true;
+    // Границы диапазона пространства, подлежащего отображению
     private double minX;
     private double maxX;
     private double minY;
     private double maxY;
     private boolean showIntegrals = false;
+    // Используемый масштаб отображения
     private double scale;
+     // Различные стили черчения линий
     private BasicStroke graphicsStroke;
     private BasicStroke axisStroke;
     private boolean turnGraph = false;
     private BasicStroke markerStroke;
+    // Различные шрифты отображения надписей
     private Font axisFont;
     private Font smallfont;
     public GraphicsDisplay() {
+        // Цвет заднего фона области отображения - белый
         setBackground(Color.WHITE);
+        // Сконструировать необходимые объекты, используемые в рисовании
+        // Перо для рисования графика
         graphicsStroke = new BasicStroke(2.0f, BasicStroke.CAP_BUTT,
+        // Перо для рисования осей координат
                 BasicStroke.JOIN_ROUND, 10.0f, new float[] {10, 10, 10, 10, 10, 10, 30 , 30, 30,30,30,30}, 0.0f);
         axisStroke = new BasicStroke(2.0f, BasicStroke.CAP_BUTT,
                 BasicStroke.JOIN_MITER, 10.0f, null, 0.0f);
+        // Перо для рисования контуров маркеров
         markerStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT,
                 BasicStroke.JOIN_MITER, 10.0f, null, 0.0f);
+        // Шрифт для подписей осей координат
         axisFont = new Font("Serif", Font.BOLD, 36);
     }
+    // Данный метод вызывается из обработчика элемента меню "Открыть файл с графиком"
+    // главного окна приложения в случае успешной загрузки данных
     public void showGraphics(Double[][] graphicsData) {
+        // Сохранить массив точек во внутреннем поле класса
         this.graphicsData = graphicsData;
         repaint();
     }
+     // Методы-модификаторы для изменения параметров отображения графика
+     // Изменение любого параметра приводит к перерисовке области
     public void setShowAxis(boolean showAxis) {
         this.showAxis = showAxis;
         repaint();
@@ -62,6 +79,7 @@ public class GraphicsDisplay extends JPanel {
         this.showIntegrals = showIntegrals;
         repaint();
     }
+    // Метод отображения всего компонента, содержащего график
     @Override
     public void paintComponent (Graphics g){
         super.paintComponent(g);
@@ -124,6 +142,7 @@ public class GraphicsDisplay extends JPanel {
         canvas.setColor(oldColor);
         canvas.setStroke(oldStroke);
     }
+     // Отрисовка графика по прочитанным координатам
     protected void paintGraphics(Graphics2D canvas) {
         canvas.setStroke(graphicsStroke);
         canvas.setColor(Color.magenta);
@@ -275,6 +294,7 @@ public class GraphicsDisplay extends JPanel {
             canvas.setColor(Color.BLUE);//tut menjat!!!!
         }
     }
+    // Метод, обеспечивающий отображение осей координат
     protected void paintAxis(Graphics2D canvas) {
         canvas.setStroke(axisStroke);
         canvas.setColor(Color.BLACK);
@@ -284,6 +304,7 @@ public class GraphicsDisplay extends JPanel {
         if (minX<=0.0 && maxX>=0.0) {
             canvas.draw(new Line2D.Double(xyToPoint(0, maxY),
                     xyToPoint(0, minY)));
+            // Стрелка оси Y
             GeneralPath arrow = new GeneralPath();
             Point2D.Double lineEnd = xyToPoint(0, maxY);
             arrow.moveTo(lineEnd.getX(), lineEnd.getY());
@@ -306,6 +327,8 @@ public class GraphicsDisplay extends JPanel {
         if (minY<=0.0 && maxY>=0.0) {
             canvas.draw(new Line2D.Double(xyToPoint(minX, 0),
                     xyToPoint(maxX, 0)));
+            
+            // Стрелка оси X
             GeneralPath arrow = new GeneralPath();
             Point2D.Double lineEnd = xyToPoint(maxX, 0);
             arrow.moveTo(lineEnd.getX(), lineEnd.getY());
@@ -329,7 +352,9 @@ public class GraphicsDisplay extends JPanel {
     }
     protected Point2D.Double shiftPoint(Point2D.Double src, double deltaX,
                                         double deltaY) {
+        // Инициализировать новый экземпляр точки
         Point2D.Double dest = new Point2D.Double();
+        // Задать еѐ координаты как координаты существующей точки + заданные смещения
         dest.setLocation(src.getX() + deltaX, src.getY() + deltaY);
         return dest;
     }
